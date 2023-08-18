@@ -1,7 +1,7 @@
 // test.js
 
 require("dotenv").config({path: "./.env"})
-const GoogleMaps = require("./src.js")
+const GoogleMaps = require("./src")
 const maps = new GoogleMaps({
 	key: process.env.GOOGLE_MAPS_API_KEY
 })

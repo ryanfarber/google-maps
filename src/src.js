@@ -1,6 +1,6 @@
 // src.js
 
-const {Client} = require("@googlemaps/google-maps-services-js")
+// const {Client} = require("@googlemaps/google-maps-services-js")
 const axios = require("axios")
 const Logger = require("@ryanforever/logger").v2
 const logger = new Logger(__filename, {debug: true})
@@ -13,7 +13,7 @@ const {placesFieldMasks, routesFieldMasks, Route, RouteV2, directionModes, direc
 class GoogleMaps {
 	constructor(config = {}) {
 
-		const client = new Client()
+		// const client = new Client()
 		const key = config.key
 		if (!key) throw new Error("please provide your google maps api key as [key]")
 
