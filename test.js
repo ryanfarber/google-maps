@@ -8,6 +8,11 @@ const maps = new GoogleMaps({
 
 
 
+// maps.routeV2({
+// 	startPlaceId: "ChIJOYNm1DBu5kcRZwdtKBzyq6k",
+// 	endPlaceId: "ChIJAQquYc1v5kcRLKslDuENAxg"
+// }).then(console.log)
+
 // maps.search("Charles de Gaulle Airport").then(console.log)
 // maps.getPlaceDetails("ChIJHTtq-rF15kcRIoTbQ9feeJ0").then(console.log)
 

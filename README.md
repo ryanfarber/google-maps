@@ -1,5 +1,5 @@
 # google-maps
-google maps api
+google maps API wrapper
 
 ## quick start
 ```javascript
@@ -9,4 +9,5 @@ const maps = new GoogleMaps({
 })
 
 maps.search("paris, france").then(console.log) // search for a location
+maps.getPlaceDetails()
 ```

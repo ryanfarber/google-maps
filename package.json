@@ -21,5 +21,8 @@
     "api"
   ],
   "author": "ryan forever",
-  "license": "ISC"
+  "license": "ISC",
+  "files": [
+    "src"
+  ]
 }

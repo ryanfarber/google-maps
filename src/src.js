@@ -46,12 +46,8 @@ class GoogleMaps {
 			let res = await axios({
 				url: "https://places.googleapis.com/v1/places:searchText",
 				method: "POST",
-				data: {
-					textQuery: query
-				},
-				headers: {
-					"X-Goog-FieldMask": placesFieldMasks.join(",")
-				}
+				data: {textQuery: query},
+				headers: {"X-Goog-FieldMask": placesFieldMasks.join(",")}
 			})
 			let data = res.data?.places || []
 			return data
@@ -187,10 +183,8 @@ class GoogleMaps {
 			}
 		}
 
-
-
 		this.route = async function(startId, endId) {
-
+			logger.deprecated("do not use!")
 			let res = await axios({
 				url: "https://routes.googleapis.com/directions/v2:computeRoutes",
 				method: "POST",
@@ -242,31 +236,42 @@ class GoogleMaps {
 				["traffic_aware_optimal", "TRAFFIC_AWARE_OPTIMAL"]
 			])
 
+			let startPlaceId = config.startPlaceId
+			let endPlaceId = config.endPlaceId
+			let startAddress = config.startAddress
+			let endAddress = config.endAddress
+			let departureTime = config.departureTime
+			let arrivalTime = config.arrivalTime
+			let travelMode = travelModes.get(config.travelMode) || "drive"
+
+			if (!startPlaceId) throw new Error("missing startPlaceId")
+			if (!endPlaceId) throw new Error("missing endPlaceId")
+
 			let validRouteModifiers = ["avoidTolls", "avoidHighways", "avoidFerries", "avoidIndoor"]
 
 			let routeModifiers = {}
 
+			// if user supplised route modifiers
 			if (config?.routeModifiers?.length) {
+				// iterate thru their modifiers
 				for (let x of config.routeModifiers) {
+					// warn if a modifier is not correct, but don't throw error???
 					if (!validRouteModifiers.includes(x)) {
 						logger.warn(`"${x}" is not a valid route modifier`)
 						continue
 					}
+					// set route modifier
 					routeModifiers[x] = true
 				}
 			}
 
 			let query = {
-				origin: {
-					placeId: config.startPlaceId,
-				},
-				destination: {
-					placeId: config.endPlaceId
-				},
-				travelMode: travelModes.get(config.mode),
+				origin: {placeId: startPlaceId},
+				destination: {placeId: endPlaceId},
+				travelMode,
 				routingPreference: routingPreferences.get(config.routingPreference) || "TRAFFIC_AWARE_OPTIMAL",
-				departureTime: config.departureTime,
-				arrivalTime: config.arrivalTime,
+				departureTime,
+				arrivalTime,
 				routeModifiers,
 				languageCode: "en-US"
 			}
@@ -276,14 +281,16 @@ class GoogleMaps {
 				method: "POST",
 				data: query,
 				headers: {
-					// "X-Goog-FieldMask": routesFieldMasks.join(",")
 					"X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.staticDuration,routes.description,routes.legs.steps.navigationInstruction,routes.legs.steps.distanceMeters,routes.legs.steps.staticDuration"
 				}
-			}).catch(handleError)
-			console.log(query)
-			// console.log(res)
-			let data = res.data.routes
-			console.log(stringify(data))
+			}).catch(err => {
+				let message = handleError(err)
+				let error = new Error(err)
+				error.description = message
+				throw error
+			})
+			let raw = res.data
+			console.log(stringify(raw))
 		}
 
 		function createDirectionsUrl(data = {}) {
@@ -304,8 +311,9 @@ class GoogleMaps {
 		}
 
 		function handleError(err) {
-			let data = err.response.data?.error || err?.response?.data?.error_message || err.response?.data
-			console.error(JSON.stringify(data, null, 2))
+			let data = err.response.data?.error || err?.response?.data?.error_message || err?.response?.data?.error?.message || err.response?.data
+			// console.error(JSON.stringify(data, null, 2))
+			return data
 		}
 
 		function formatPlaceId(id) {
