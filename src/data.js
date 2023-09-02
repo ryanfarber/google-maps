@@ -1,6 +1,7 @@
 // data.js
 
 const { convert } = require("html-to-text")
+const kindof = require("kind-of")
 
 let placesFieldMasks = [
 	"places.id",
@@ -73,119 +74,24 @@ let directionAvoids = [
 	"indoor"
 ]
 
-class Base {
+let transitModes = [
+	"bus",
+	"subway",
+	"train",
+	"tram",
+	"rail"
+]
 
-	metersToMiles(meters) {
-		return this.round(meters * 0.00062137)
-	}
-
-	metersToKilometers(meters) {
-		return this.round(meters / 1000)
-	}
-
-	secsToMins(secs) {
-		return parseFloat((secs / 60).toFixed(2))
-	}
-
-	metersToFeet(meters) {
-		return parseFloat((meters * 3.28084).toFixed(2))
-	}
-
-	round(n, i) {
-		if (!n) return
-		i = i ?? 2
-		return parseFloat(parseFloat(n).toFixed(i))
-	}
-}
+let trafficModels = [
+	"best_guess",
+	"pessimistic",
+	"optimistic"
+]
 
 
 
-class Route extends Base {
-	constructor(raw = {}) {
-		super()
-		this.startId
-		this.startAddress = raw.startAddress
-		this.endId = raw.endId
-		this.endAddress
-		this.durationSecs = parseInt(raw.duration)
-		this.durationMins = Math.floor(parseInt(raw.duration) / 60)
-		this.distanceMeters = raw.distanceMeters
-		this.distanceKilometers = this.metersToKilometers(raw.distanceMeters)
-		// this.distanceMiles = this.metersToMiles(raw.distanceMeters)
-		this.steps = raw.legs[0].steps.map(x => new Step(x))
-		this.instructions = raw.legs[0].steps.map(x => x.navigationInstruction.instructions)
-		// this.steps = raw.legs[0].steps
-		console.log(raw.legs[0])
-		this.raw = {}
 
-		Object.defineProperty(this, "raw", {
-			get() {
-				return raw
-			}
-		})
-	}
-}
-
-class Step extends Base {
-	constructor(raw) {
-		super()
-		this.instructions = raw?.navigationInstruction?.instructions
-		this.durationSecs = this.round(raw?.staticDuration)
-		this.durationMins = this.secsToMins(raw?.staticDuration)
-		this.raw = {}
-
-		Object.defineProperty(this, "raw", {
-			get() {return raw}
-		})
-	}
-}
+module.exports = {placesFieldMasks, routesFieldMasks, directionModes, directionAvoids}
 
 
 
-class RouteV2 extends Base {
-	constructor(data = {}) {
-		super()
-		let raw = data.routes[0].legs[0]
-		this.startAddress = raw.start_address
-		this.endAddress = raw.end_address
-		this.startId = undefined
-		this.endId = undefined
-		this.mode = undefined
-		this.avoid = undefined
-		this.durationMins = this.secsToMins(raw.duration?.value)
-		this.distanceMeters = raw.distance.value
-		this.distanceKilometers = this.metersToKilometers(raw.distance.value)
-		this.distanceMiles = this.metersToMiles(raw.distance.value)
-		this.directionsUrl = undefined
-		this.warnings = data.routes[0].warnings
-		this.steps = raw.steps.map(x => new StepV2(x))
-		this.raw = {}
-
-		Object.defineProperty(this, "raw", {
-			get() {return raw}
-		})
-	}
-}
-
-
-class StepV2 extends Base {
-	constructor(raw) {
-		super()
-		this.instructions = convert(raw?.html_instructions)
-		this.distanceMeters = raw.distance.value
-		this.distanceKilometers = this.metersToKilometers(raw.distance.value)
-		this.distanceFeet = this.metersToFeet(raw.distance.value)
-		this.distanceMiles = this.metersToMiles(raw.distance.value)
-		this.durationMins = this.secsToMins(raw?.duration.value)
-		this.raw = {}
-
-		Object.defineProperty(this, "raw", {
-			get() {
-				return raw
-			}
-		})
-	}
-}
-
-
-module.exports = {placesFieldMasks, routesFieldMasks, Route, RouteV2, StepV2, directionModes, directionAvoids}

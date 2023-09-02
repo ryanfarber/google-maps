@@ -18,9 +18,31 @@ const maps = new GoogleMaps({
 // maps.getDirections({
 // 	startId: "ChIJn82-Depv5kcRVtw33lEC4is",
 // 	endId: "ChIJW89MjgM-5kcRLKZbL5jgKwQ",
-// 	mode: "driving",
-// 	avoid: ["tolls"]
+// 	returnRaw: true,
+// 	// mode: "transit",
+// 	// avoid: ["tolls"],
+// 	// trafficModel: "pessimistic"
 // }).then(console.log)
 
-maps.search("HOTEL DU COLLECTIONNEUR, 51-57 RUE DE COURCELLES,  PARIS").then(console.log)
+// maps.getDirectionsV2({
+// 	startPlaceId: "ChIJW89MjgM-5kcRLKZbL5jgKwQ",
+// 	endPlaceId: "ChIJn82-Depv5kcRVtw33lEC4is",
+// 	mode: "driving",
+// 	// transitMode: ["train", "bus"],
+// 	returnRaw: false,
+// 	avoid: ["tolls", "highways"],
+// 	// trafficModel: "pessimistic"
+// }).then(res => {
+// 	console.log(res)
+// })
+
+// maps.routeV2({
+// 	startPlaceId: "ChIJW89MjgM-5kcRLKZbL5jgKwQ",
+// 	endPlaceId: "ChIJn82-Depv5kcRVtw33lEC4is",
+// 	mode: "drive",
+// 	routeModifiers: ["avoidTolls", "avoidFerries"]
+// 	// avoid: ["avoidTolls", "avoidFerries", "avoide"]
+// })
+
+// maps.search("HOTEL DU COLLECTIONNEUR, 51-57 RUE DE COURCELLES,  PARIS").then(console.log)
 
