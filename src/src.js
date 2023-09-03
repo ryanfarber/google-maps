@@ -116,8 +116,9 @@ class GoogleMaps {
 			return route
 		}
 
+		/** get directions */
 		this.getDirectionsV2 = async function(config = {}) {
-			logger.debug(`creating directions...`)
+			logger.debug(`getting directions...`)
 
 			let startPlaceId = config.startPlaceId
 			let endPlaceId = config.endPlaceId
@@ -293,7 +294,8 @@ class GoogleMaps {
 			console.log(stringify(raw))
 		}
 
-		function createDirectionsUrl(data = {}) {
+		this.createDirectionsUrl = function(data = {}) {
+			const encodeUrl = require("./helpers/url-encoder.js")
 			logger.debug("creating directions url...")
 			let url = "https://www.google.com/maps/dir/?api=1&"
 			let query = qs.stringify({
@@ -306,7 +308,7 @@ class GoogleMaps {
 				// transit_mode: data.transitMode.join("|"),
 				// dir_action: data.action || "navigate"
 			})
-			url = url + query + "/data=" + "!4m4!4m3!2m1!2b1!3e0"
+			url = url + query + "z/" + encodeUrl(data)
 			return url
 		}
 

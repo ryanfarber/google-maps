@@ -8,6 +8,16 @@ const maps = new GoogleMaps({
 
 
 
+
+let url = maps.createDirectionsUrl({
+	startPlaceId: "ChIJOYNm1DBu5kcRZwdtKBzyq6k",
+	endPlaceId: "ChIJAQquYc1v5kcRLKslDuENAxg",
+	// mode: "transit"
+	transitTypes: ["bus"]
+})
+console.log(url)
+
+
 // maps.routeV2({
 // 	startPlaceId: "ChIJOYNm1DBu5kcRZwdtKBzyq6k",
 // 	endPlaceId: "ChIJAQquYc1v5kcRLKslDuENAxg"

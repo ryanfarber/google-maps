@@ -24,5 +24,13 @@
   "license": "ISC",
   "files": [
     "src"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanfarber/google-maps.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ryanfarber/google-maps/issues"
+  },
+  "homepage": "https://github.com/ryanfarber/google-maps#readme"
 }
