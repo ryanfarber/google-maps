@@ -308,7 +308,7 @@ class GoogleMaps {
 				// transit_mode: data.transitMode.join("|"),
 				// dir_action: data.action || "navigate"
 			})
-			url = url + query + "z/" + encodeUrl(data)
+			url = url + query
 			return url
 		}
 

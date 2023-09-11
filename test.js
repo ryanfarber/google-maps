@@ -9,13 +9,13 @@ const maps = new GoogleMaps({
 
 
 
-let url = maps.createDirectionsUrl({
-	startPlaceId: "ChIJOYNm1DBu5kcRZwdtKBzyq6k",
-	endPlaceId: "ChIJAQquYc1v5kcRLKslDuENAxg",
-	// mode: "transit"
-	transitTypes: ["bus"]
-})
-console.log(url)
+// let url = maps.createDirectionsUrl({
+// 	startPlaceId: "ChIJOYNm1DBu5kcRZwdtKBzyq6k",
+// 	endPlaceId: "ChIJAQquYc1v5kcRLKslDuENAxg",
+// 	// mode: "transit"
+// 	transitTypes: ["bus"]
+// })
+// console.log(url)
 
 
 // maps.routeV2({
@@ -61,3 +61,9 @@ console.log(url)
 
 // maps.search("HOTEL DU COLLECTIONNEUR, 51-57 RUE DE COURCELLES,  PARIS").then(console.log)
 
+
+
+maps.search("hotel balzac").then(res => {
+	let item = res[0]
+	maps.getPlaceDetails(item.id).then(console.log)
+})
