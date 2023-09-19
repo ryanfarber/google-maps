@@ -329,18 +329,38 @@ class GoogleMaps {
 		/** parses the address components field into it's constituents */
 		this.parseAddressComponents = function(addressComponents = []) {
 			let arr = addressComponents
-			let streetNumber = arr.find(x => x.types.includes("street_number"))?.longText
-			let address = arr.find(x => x.types.includes("route"))?.longText
-			let addressShort = arr.find(x => x.types.includes("route"))?.shortText
-			let address1 = `${streetNumber} ${address}`
-			let city =  arr.find(x => x.types.includes("locality"))?.longText
-			let state = arr.find(x => x.types.includes("administrative_area_level_1"))?.longText
-			let stateAbbr = arr.find(x => x.types.includes("administrative_area_level_1"))?.shortText
-			let country = arr.find(x => x.types.includes("country"))?.longText
-			let countryAbbr = arr.find(x => x.types.includes("country"))?.shortText
-			let zipcode = arr.find(x => x.types.includes("postal_code"))?.longText
-			let zipcodeSuffix =arr.find(x => x.types.includes("postal_code_suffix"))?.longText
-			return {streetNumber, address, addressShort, address1, city, state, stateAbbr, zipcode, zipcodeSuffix, country, countryAbbr}
+			let streetNumber = arr.find(x => x.types.includes("street_number"))
+			let premise = arr.find(x => x.types.includes("premise"))
+			let address = arr.find(x => x.types.includes("route"))
+			let addressShort = arr.find(x => x.types.includes("route"))
+			let city =  arr.find(x => x.types.includes("locality"))
+			let state = arr.find(x => x.types.includes("administrative_area_level_1"))
+			let stateAbbr = arr.find(x => x.types.includes("administrative_area_level_1"))
+			let country = arr.find(x => x.types.includes("country"))
+			let countryAbbr = arr.find(x => x.types.includes("country"))
+			let zipcode = arr.find(x => x.types.includes("postal_code"))
+			let zipcodeSuffix = arr.find(x => x.types.includes("postal_code_suffix"))
+
+
+			streetNumber = streetNumber?.longText || streetNumber?.long_name
+			address = address?.longText || address?.long_name
+			addressShort = addressShort?.shortText || addressShort?.short_name
+			premise = premise?.longText || premise?.long_name
+			city = city?.longText || city?.long_name
+			state = state?.longText || state?.long_name
+			stateAbbr = stateAbbr?.shortText || stateAbbr?.short_name
+			country = country?.longText || country?.long_name
+			countryAbbr = countryAbbr?.shortText || countryAbbr?.short_name
+			zipcode = zipcode?.longText || zipcode?.long_name
+			zipcodeSuffix = zipcodeSuffix?.longText || zipcodeSuffix?.long_name
+
+
+			let address1
+			if (streetNumber && address) address1 = `${streetNumber} ${address}`
+			else if(!streetNumber && !address && premise) address1 = premise
+			else if (!streetNumber && address) address1 = address
+			else address1 = undefined
+			return {streetNumber, address, addressShort, premise, address1, city, state, stateAbbr, zipcode, zipcodeSuffix, country, countryAbbr}
 		}
 
 		function handleError(err) {

@@ -63,13 +63,19 @@ const maps = new GoogleMaps({
 
 
 
-maps.search("hotel balzac").then(res => {
-	let item = res[0]
-	// console.log(item)
-	console.log(maps.parseAddressComponents(item.addressComponents))
-	maps.getPlaceDetails(item.id).then(res => {
-		console.log(res.photos)
-	})
+// maps.search("hotel balzac").then(res => {
+// 	let item = res[0]
+// 	console.log(item)
+// 	console.log(maps.parseAddressComponents(item.addressComponents))
+// 	maps.getPlaceDetails(item.id).then(res => {
+// 		console.log(res.photos)
+// 	})
+// })
+
+maps.getPlaceDetails("ChIJn82-Depv5kcRVtw33lEC4is").then(res => {
+	// console.log(res)
+	console.log(res.address_components)
+	console.log(maps.parseAddressComponents(res.address_components))
 })
 
 
