@@ -312,6 +312,37 @@ class GoogleMaps {
 			return url
 		}
 
+		this.getPhoto = async function(photoReference) {
+			let url = "https://maps.googleapis.com/maps/api/place/photo/"
+			let res = await axios.get(url, {
+				params: {
+					photo_reference: photoReference,
+					// key
+				}
+			}).catch(err => {
+				throw err
+			})
+			let data = res.data
+			console.log(data)
+		}
+
+		/** parses the address components field into it's constituents */
+		this.parseAddressComponents = function(addressComponents = []) {
+			let arr = addressComponents
+			let streetNumber = arr.find(x => x.types.includes("street_number"))?.longText
+			let address = arr.find(x => x.types.includes("route"))?.longText
+			let addressShort = arr.find(x => x.types.includes("route"))?.shortText
+			let address1 = `${streetNumber} ${address}`
+			let city =  arr.find(x => x.types.includes("locality"))?.longText
+			let state = arr.find(x => x.types.includes("administrative_area_level_1"))?.longText
+			let stateAbbr = arr.find(x => x.types.includes("administrative_area_level_1"))?.shortText
+			let country = arr.find(x => x.types.includes("country"))?.longText
+			let countryAbbr = arr.find(x => x.types.includes("country"))?.shortText
+			let zipcode = arr.find(x => x.types.includes("postal_code"))?.longText
+			let zipcodeSuffix =arr.find(x => x.types.includes("postal_code_suffix"))?.longText
+			return {streetNumber, address, addressShort, address1, city, state, stateAbbr, zipcode, zipcodeSuffix, country, countryAbbr}
+		}
+
 		function handleError(err) {
 			let data = err.response.data?.error || err?.response?.data?.error_message || err?.response?.data?.error?.message || err.response?.data
 			// console.error(JSON.stringify(data, null, 2))

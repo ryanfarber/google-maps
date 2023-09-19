@@ -12,5 +12,9 @@ maps.search("paris, france").then(console.log) // search for a location
 maps.getPlaceDetails()
 ```
 
-
-hello this is a new update
+## methods
+```javascript
+maps.search("query")
+maps.getPlaceDetails("placeId")
+maps.parseAddressComponents([addressComponents])
+```
