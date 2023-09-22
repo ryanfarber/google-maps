@@ -72,11 +72,16 @@ const maps = new GoogleMaps({
 // 	})
 // })
 
-maps.getPlaceDetails("ChIJn82-Depv5kcRVtw33lEC4is").then(res => {
-	// console.log(res)
-	console.log(res.address_components)
-	console.log(maps.parseAddressComponents(res.address_components))
-})
+// maps.getPlaceDetails("ChIJn82-Depv5kcRVtw33lEC4is").then(res => {
+// 	// console.log(res)
+// 	console.log(res.address_components)
+// 	console.log(maps.parseAddressComponents(res.address_components))
+// })
 
 
+
+maps.getDirectionsV2({
+	startPlaceId: "ChIJt9VeXGRv5kcRA7kQ-xGju00",
+	endPlaceId:  "ChIJp5398YZv5kcRNP0jeI5cWpI"
+}).then(console.log)
 

@@ -3,7 +3,7 @@
 // const {Client} = require("@googlemaps/google-maps-services-js")
 const axios = require("axios")
 const Logger = require("@ryanforever/logger").v2
-const logger = new Logger("google maps api", {debug: true})
+
 const kindof = require("kind-of")
 const qs = require("querystring")
 const {validate}  = require("./helpers.js")
@@ -30,7 +30,7 @@ class GoogleMaps {
 		// const client = new Client()
 		const key = config.key
 		if (!key) throw new Error("please provide your google maps api key as [key]")
-
+		const logger = new Logger("google maps api", {debug: config.debug ?? false})
 		axios.defaults.headers.common = {
 			"X-Goog-Api-Key": key,
 			"Content-Type": "application/json",
@@ -152,7 +152,7 @@ class GoogleMaps {
 				transitMode: config.transitMode,
 				avoid,
 				trafficModel,
-				directionsUrl: createDirectionsUrl({startPlaceId, endPlaceId, mode, avoid, transitMode}),
+				directionsUrl: this.createDirectionsUrl({startPlaceId, endPlaceId, mode, avoid, transitMode}),
 				raw: res.data,
 				rawFrench: resFrench.data
 			})
