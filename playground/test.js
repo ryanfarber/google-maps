@@ -73,15 +73,24 @@ const maps = new GoogleMaps({
 // })
 
 // maps.getPlaceDetails("ChIJn82-Depv5kcRVtw33lEC4is").then(res => {
-// 	// console.log(res)
-// 	console.log(res.address_components)
-// 	console.log(maps.parseAddressComponents(res.address_components))
+// 	console.log(res)
+// 	// console.log(res.address_components)
+// 	// console.log(maps.parseAddressComponents(res.address_components))
 // })
 
+maps.search("hotel balzac").then(console.log)
+// maps.searchV2("orly airport").then(console.log)
+// maps.searchV3("hotel balzac").then(console.log)
 
+// let arrivalTime = new Date("08-23-2024 13:30").getTime()
+// console.log(new Date(arrivalTime))
 
-maps.getDirectionsV2({
-	startPlaceId: "ChIJt9VeXGRv5kcRA7kQ-xGju00",
-	endPlaceId:  "ChIJp5398YZv5kcRNP0jeI5cWpI"
-}).then(console.log)
+// maps.getDirectionsV2({
+// 	startPlaceId: "ChIJW89MjgM-5kcRLKZbL5jgKwQ",
+// 	endPlaceId:  "ChIJLU7jZClu5kcR4PcOOO6p3I0",
+// 	// arrivalTime: arrivalTime,
+// 	mode: "transit"
+// }).then(res => {
+// 	console.log(res.raw)
+// })
 

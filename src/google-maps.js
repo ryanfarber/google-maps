@@ -14,7 +14,8 @@ const {
 	directionModes, 
 	directionAvoids, 
 	transitModes, 
-	trafficModels
+	trafficModels,
+	placeFieldsV2,
 } = require("./data.js")
 
 const {
@@ -48,8 +49,53 @@ class GoogleMaps {
 				method: "POST",
 				data: {textQuery: query},
 				headers: {"X-Goog-FieldMask": placesFieldMasks.join(",")}
+			}).catch(err => {
+
+				console.error(JSON.stringify(err.response.data, null, 2))
+
+				throw new Error(err)
 			})
 			let data = res.data?.places || []
+			return data
+		}
+
+		this.searchV2 = async function(query) {
+			logger.debug(`searching v2 for ${query}...`)
+			
+			let res = await axios({
+				url: "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
+				method: "GET",
+				params: {input: query, inputtype: "textquery", fields: placeFieldsV2.join(",")},
+				headers: {"X-Goog-FieldMask": placesFieldMasks.join(",")}
+			}).catch(err => {
+				let message = err?.response?.data?.error || err.response.data
+				let details = message?.details
+				console.error(JSON.stringify(details, null, 2))
+
+				throw new Error(err)
+			})
+			console.log(res)
+			let data = res.data?.candidates || []
+			return data
+		}
+
+		this.searchV3 = async function(query) {
+			logger.debug(`searching v3 for ${query}...`)
+			
+			let res = await axios({
+				url: "https://maps.googleapis.com/maps/api/place/textsearch/json",
+				method: "GET",
+				params: {query},
+				headers: {"X-Goog-FieldMask": placesFieldMasks.join(",")}
+			}).catch(err => {
+				let message = err?.response?.data?.error || err.response.data
+				let details = message?.details
+				console.error(JSON.stringify(details, null, 2))
+
+				throw new Error(err)
+			})
+			console.log(res)
+			let data = res.data?.results || []
 			return data
 		}
 
@@ -143,6 +189,8 @@ class GoogleMaps {
 
 			let res = await req("en")
 			let resFrench = await req("fr")
+			console.log(res.data)
+			if (res?.data?.status == "ZERO_RESULTS") throw new Error("no directions found for this route")
 
 			let raw = res.data
 			let route = new RouteV3({
@@ -168,6 +216,8 @@ class GoogleMaps {
 						destination: formatPlaceId(endPlaceId),
 						mode,
 						avoid,
+						arrival_time: arrivalTime,
+						departure_time: departureTime,
 						language,
 						transit_mode: transitMode.join("|")
 						// traffic_model: trafficModel
