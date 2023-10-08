@@ -1,3 +1,3 @@
 // index.js
 
-module.exports = require("./google-maps.js")
+module.exports = require("./GoogleMaps.js")

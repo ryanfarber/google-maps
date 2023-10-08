@@ -3,6 +3,8 @@
 // const {Client} = require("@googlemaps/google-maps-services-js")
 const axios = require("axios")
 const Logger = require("@ryanforever/logger").v2
+const path = require("path")
+const fs = require("fs")
 
 const kindof = require("kind-of")
 const qs = require("querystring")
@@ -94,7 +96,7 @@ class GoogleMaps {
 
 				throw new Error(err)
 			})
-			console.log(res)
+			// console.log(res)
 			let data = res.data?.results || []
 			return data
 		}
@@ -189,7 +191,7 @@ class GoogleMaps {
 
 			let res = await req("en")
 			let resFrench = await req("fr")
-			console.log(res.data)
+
 			if (res?.data?.status == "ZERO_RESULTS") throw new Error("no directions found for this route")
 
 			let raw = res.data
@@ -362,19 +364,48 @@ class GoogleMaps {
 			return url
 		}
 
-		this.getPhoto = async function(photoReference) {
-			let url = "https://maps.googleapis.com/maps/api/place/photo/"
+		this.getPhotoByReference = async function(photoReference) {
+			logger.debug(`getting photo...`)
+
+			let url = "https://maps.googleapis.com/maps/api/place/photo"
+
 			let res = await axios.get(url, {
 				params: {
 					photo_reference: photoReference,
-					// key
-				}
+					maxheight: 1000
+				},
+				responseType: "stream"
 			}).catch(err => {
-				throw err
+				console.error(err)
+				throw new Error(err)
 			})
 			let data = res.data
-			console.log(data)
+			let filename = "photo.jpg"
+			let savepath = path.join(__dirname, "../downloads", filename)
+
+			data.pipe(fs.createWriteStream(savepath))
 		}
+
+		this.downloadPhotos = async function(placeId, numPhotos) {
+			numPhotos = numPhotos ?? 5
+			let data = await this.getPlaceDetails(placeId)
+			let placeName = data.name
+			let photos = data.photos
+			let photosToDownload = photos.slice(0, numPhotos)
+
+			let i = 1
+			for (let photo of photosToDownload) {
+				let photoRef = photo.photo_reference
+				downloadPhoto({
+					photoRef,
+					placeName,
+					fileName: `${placeName}_${i}`
+				})
+				i++
+			}
+		}
+
+		// this.getPhoto = async function()
 
 		/** parses the address components field into it's constituents */
 		this.parseAddressComponents = function(addressComponents = []) {
@@ -411,6 +442,34 @@ class GoogleMaps {
 			else if (!streetNumber && address) address1 = address
 			else address1 = undefined
 			return {streetNumber, address, addressShort, premise, address1, city, state, stateAbbr, zipcode, zipcodeSuffix, country, countryAbbr}
+		}
+
+		async function downloadPhoto(config = {}) {
+			let {photoRef, placeName, fileName} = config
+
+			if (!photoRef) throw new Error(`missing photoRef`)
+			if (!placeName) throw new Error(`missing placeName`)
+			if (!fileName) throw new Error(`missing fileNme`)
+			logger.debug(`getting photo...`)
+
+			let url = "https://maps.googleapis.com/maps/api/place/photo"
+
+			let res = await axios.get(url, {
+				params: {
+					photo_reference: photoRef,
+					maxheight: 1000
+				},
+				responseType: "stream"
+			}).catch(err => {
+				console.error(err)
+				throw new Error(err)
+			})
+			let data = res.data
+			fileName = `${fileName}.jpg`
+			if (!fs.existsSync(path.join(__dirname, "../downloads", placeName))) fs.mkdirSync(path.join(__dirname, "../downloads", placeName))
+			let savepath = path.join(__dirname, "../downloads", placeName, fileName)
+
+			data.pipe(fs.createWriteStream(savepath))
 		}
 
 		function handleError(err) {
