@@ -72,12 +72,6 @@ const maps = new GoogleMaps({
 // 	})
 // })
 
-maps.getPlaceDetails("ChIJn82-Depv5kcRVtw33lEC4is").then(res => {
-	console.log(res)
-	// console.log(res.address_components)
-	// console.log(maps.parseAddressComponents(res.address_components))
-})
-
 // maps.search("hotel balzac").then(console.log)
 // maps.searchV2("orly airport").then(console.log)
 // maps.searchV3("hotel balzac").then(console.log)

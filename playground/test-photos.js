@@ -17,7 +17,8 @@ let exampleRef = "ATJ83zhol79A5LjB082pd1s_u8YV-ZQIXmY_g1bwlyELEuIj6ZeoxjJmJo7Rin
 
 
 
-maps.downloadPhotos("ChIJn82-Depv5kcRVtw33lEC4is", 5)
+// maps.downloadPhotos("ChIJn82-Depv5kcRVtw33lEC4is", 5)
+// maps.getPhotoBase64(exampleRef).then(console.log)
 // maps.getPhoto(exampleRef)
 
 

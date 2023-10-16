@@ -52,7 +52,7 @@ class GoogleMaps {
 				data: {textQuery: query},
 				headers: {"X-Goog-FieldMask": placesFieldMasks.join(",")}
 			}).catch(err => {
-
+				console.log(err)
 				console.error(JSON.stringify(err.response.data, null, 2))
 
 				throw new Error(err)
@@ -364,7 +364,7 @@ class GoogleMaps {
 			return url
 		}
 
-		this.getPhotoByReference = async function(photoReference) {
+		this.getPhotoBase64 = async function(photoReference) {
 			logger.debug(`getting photo...`)
 
 			let url = "https://maps.googleapis.com/maps/api/place/photo"
@@ -374,16 +374,12 @@ class GoogleMaps {
 					photo_reference: photoReference,
 					maxheight: 1000
 				},
-				responseType: "stream"
+				responseType: "arraybuffer"
 			}).catch(err => {
 				console.error(err)
 				throw new Error(err)
 			})
-			let data = res.data
-			let filename = "photo.jpg"
-			let savepath = path.join(__dirname, "../downloads", filename)
-
-			data.pipe(fs.createWriteStream(savepath))
+			return Buffer.from(res.data, "binary").toString("base64")
 		}
 
 		this.downloadPhotos = async function(placeId, numPhotos) {
